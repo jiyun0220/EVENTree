@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Papa from "papaparse";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -82,6 +83,7 @@ const getCategoryImage = (category: string): string => {
 };
 
 export default function Home() {
+  const navigate = useNavigate();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([
     "전체",
   ]);
@@ -148,7 +150,7 @@ export default function Home() {
             console.log("헤더:", results.meta.fields);
 
             const parsedEvents: PerformanceEvent[] = results.data
-              .filter((item: any) => {
+              .map((item: any, originalIndex: number) => {
                 const title =
                   item["행사명"] || item["공연명"] || item["title"] || "";
                 const startDate =
@@ -156,9 +158,11 @@ export default function Home() {
                   item["공연시작일"] ||
                   item["startDate"] ||
                   "";
-                return title && isWithinLastYear(startDate);
-              })
-              .map((item: any, index: number) => {
+                
+                if (!title || !isWithinLastYear(startDate)) {
+                  return null;
+                }
+
                 const content =
                   item["행사내용"] ||
                   item["내용"] ||
@@ -168,7 +172,7 @@ export default function Home() {
                 const category = getCategoryFromContent(content);
 
                 return {
-                  seq: String(index + 1),
+                  seq: String(originalIndex),
                   title:
                     item["행사명"] || item["공연명"] || item["title"] || "",
                   startDate:
@@ -195,6 +199,7 @@ export default function Home() {
                   category: category,
                 };
               })
+              .filter((item): item is PerformanceEvent => item !== null)
               .sort((a, b) => {
                 // 최신순 정렬
                 const dateA = parseDate(a.startDate);
@@ -334,15 +339,24 @@ export default function Home() {
           className="h-[40px] object-contain"
         />
 
-        <div className="ml-auto flex items-center gap-2 rounded-full border border-[#888888] bg-white px-4 py-2 w-[615px]">
-          <input
-            type="text"
-            placeholder="검색어를 입력해주세요"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 text-sm outline-none"
-          />
-          <span className="text-[#888888] text-xl">🔍</span>
+        <div className="ml-auto flex items-center gap-4">
+          <div className="flex items-center gap-2 rounded-full border border-[#888888] bg-white px-4 py-2 w-[615px]">
+            <input
+              type="text"
+              placeholder="검색어를 입력해주세요"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="flex-1 text-sm outline-none"
+            />
+            <span className="text-[#888888] text-xl">🔍</span>
+          </div>
+          <button
+            onClick={() => navigate("/calendar")}
+            className="flex items-center justify-center w-10 h-10 rounded-full bg-[#38b000] hover:bg-[#2d8c00] transition-colors"
+            aria-label="내 캘린더"
+          >
+            <img src="/profile-icon.svg" alt="프로필" className="w-6 h-6" />
+          </button>
         </div>
       </header>
 
@@ -382,7 +396,8 @@ export default function Home() {
             displayedEvents.map((event: PerformanceEvent, index: number) => (
               <div
                 key={event.seq}
-                className={`flex flex-col gap-[20px] rounded-[10px] border p-[20px] transition-all hover:shadow-lg ${
+                onClick={() => navigate(`/event/${event.seq}`)}
+                className={`flex flex-col gap-[20px] rounded-[10px] border p-[20px] transition-all hover:shadow-lg cursor-pointer ${
                   index === 0
                     ? "border-[#38b000] bg-white"
                     : "border-[#888888] bg-white hover:border-[#38b000]"
