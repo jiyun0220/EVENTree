@@ -197,7 +197,7 @@ export default function EventDetail() {
         <img
           src="/background_tree.png"
           alt=""
-          className="w-full h-auto object-cover object-bottom"
+          className="object-cover object-bottom w-full h-auto"
         />
       </div>
 
@@ -213,16 +213,16 @@ export default function EventDetail() {
       </header>
 
       {/* 메인 콘텐츠 */}
-      <main className="relative z-10 max-w-6xl mx-auto px-10 py-12">
+      <main className="relative z-10 max-w-6xl px-10 py-12 mx-auto">
         <div className="bg-white rounded-[20px] shadow-lg overflow-hidden">
-          <div className="grid md:grid-cols-2 gap-8 p-8">
+          <div className="grid gap-8 p-8 md:grid-cols-2">
             {/* 왼쪽: 이미지 */}
             <div className="flex flex-col gap-4">
               <div className="w-full aspect-[3/4] bg-gradient-to-br from-white to-gray-50 rounded-[10px] border border-[#888888]/50 flex items-center justify-center p-8">
                 <img
                   src={event.thumbnail}
                   alt={event.category}
-                  className="max-w-full max-h-full object-contain"
+                  className="object-contain max-w-full max-h-full"
                 />
               </div>
               <div className="inline-block px-4 py-2 bg-[#38b000]/10 text-[#38b000] text-sm rounded-full text-center">
@@ -247,7 +247,7 @@ export default function EventDetail() {
                 )}
               </div>
 
-              <div className="border-t border-gray-200 pt-6">
+              <div className="pt-6 border-t border-gray-200">
                 <div className="grid gap-4">
                   {(event.startDate || event.endDate) && (
                     <div>
@@ -300,7 +300,7 @@ export default function EventDetail() {
 
               {/* 날짜 선택 및 추가 버튼 (미래 행사인 경우) */}
               {isUpcoming(event.startDate) && (
-                <div className="border-t border-gray-200 pt-6 mt-auto">
+                <div className="pt-6 mt-auto border-t border-gray-200">
                   <p className="text-sm text-[#888888] mb-3">일정에 추가하기</p>
                   <div className="flex gap-3">
                     <input
@@ -331,7 +331,7 @@ export default function EventDetail() {
 
           {/* 행사 내용 */}
           {event.content && (
-            <div className="border-t border-gray-200 p-8">
+            <div className="p-8 border-t border-gray-200">
               <h2 className="text-2xl font-bold text-[#222222] mb-4">
                 행사 소개
               </h2>
@@ -343,9 +343,9 @@ export default function EventDetail() {
 
           {/* 위치 정보 */}
           {event.gpsX && event.gpsY && (
-            <div className="border-t border-gray-200 p-8">
+            <div className="p-8 border-t border-gray-200">
               <h2 className="text-2xl font-bold text-[#222222] mb-4">위치</h2>
-              <div className="bg-gray-100 rounded-lg p-4 text-center">
+              <div className="p-4 text-center bg-gray-100 rounded-lg">
                 <p className="text-[#888888]">
                   좌표: {event.gpsY}, {event.gpsX}
                 </p>

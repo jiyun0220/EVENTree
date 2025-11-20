@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Papa from "papaparse";
 import toast, { Toaster } from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 interface PerformanceEvent {
   seq: string;
@@ -50,7 +51,7 @@ const categoryKeywords: { [key: string]: string[] } = {
 };
 
 // 행사내용으로 카테고리 판별
-const getCategoryFromContent = (content: string): string => {
+const getCategoryFromContent = (content: string): string => {  
   const lowerContent = content.toLowerCase();
 
   for (const [category, keywords] of Object.entries(categoryKeywords)) {
@@ -309,6 +310,16 @@ export default function Home() {
     }
   };
 
+  // 다국어 지원
+  const { i18n } = useTranslation();
+
+  const changeLanguage = (lng: "en" | "ko") => {
+    i18n.changeLanguage(lng);
+  };
+
+  const { t } = useTranslation();
+  // <h2>{t('login')}</h2> 와 같이 사용 가능
+
   return (
     <div className="relative min-h-screen w-full bg-gradient-to-b from-white to-[rgba(56,176,0,0.1)] overflow-x-hidden">
       {/* 배경 나무 이미지 - 가장 뒤 */}
@@ -316,19 +327,19 @@ export default function Home() {
         <img
           src="/background_tree.png"
           alt=""
-          className="w-full h-auto object-cover object-bottom"
+          className="object-cover object-bottom w-full h-auto"
         />
       </div>
 
       {/* 배경 장식 이미지들 */}
       <div className="fixed left-[-111px] top-[625px] h-[538px] w-[692px] opacity-50 pointer-events-none z-[1]">
-        <div className="w-full h-full bg-gradient-to-br from-green-200 to-green-300 rounded-full blur-3xl" />
+        <div className="w-full h-full rounded-full bg-gradient-to-br from-green-200 to-green-300 blur-3xl" />
       </div>
       <div className="fixed left-[419px] top-[719px] h-[538px] w-[692px] opacity-30 pointer-events-none z-[1]">
-        <div className="w-full h-full bg-gradient-to-br from-green-200 to-green-300 rounded-full blur-3xl" />
+        <div className="w-full h-full rounded-full bg-gradient-to-br from-green-200 to-green-300 blur-3xl" />
       </div>
       <div className="fixed left-[930px] top-[556px] h-[538px] w-[692px] opacity-70 pointer-events-none z-[1]">
-        <div className="w-full h-full bg-gradient-to-br from-green-200 to-green-300 rounded-full blur-3xl" />
+        <div className="w-full h-full rounded-full bg-gradient-to-br from-green-200 to-green-300 blur-3xl" />
       </div>
 
       {/* 헤더 */}
@@ -339,26 +350,26 @@ export default function Home() {
           className="h-[40px] object-contain"
         />
 
-        <div className="ml-auto flex items-center gap-4">
+        <div className="flex items-center gap-4 ml-auto">
           <div className="flex items-center gap-2 rounded-full border border-[#888888] bg-white px-4 py-2 w-[615px]">
             <input
               type="text"
-              placeholder="검색어를 입력해주세요"
+              placeholder={t('searching')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="flex-1 text-sm outline-none"
             />
             <span className="text-[#888888] text-xl">🔍</span>
           </div>
+          {/* 언어 전환 버튼 */}
           <button
-            onClick={() => {
-              // TODO: 언어 전환 로직 추가
-              toast.success("이소에 언어 전환 기능 추가해");
-            }}
+            onClick={() => changeLanguage(i18n.language === "ko" ? "en" : "ko")}
             className="flex items-center gap-2 px-4 py-2 border border-[#888888] rounded-lg hover:border-[#38b000] hover:bg-[#f0fdf4] transition-colors"
             aria-label="언어 전환"
           >
-            <span className="text-sm font-medium text-[#444444]">KO</span>
+            <span className="text-sm font-medium text-[#444444]">
+              {i18n.language === "ko" ? "KO" : "EN"}{" "}
+            </span>
           </button>
           <button
             onClick={() => navigate("/calendar")}
@@ -386,20 +397,20 @@ export default function Home() {
                     : "border-[#888888] bg-white text-[#888888] hover:border-[#38b000] hover:text-[#38b000]"
                 }`}
               >
-                {category}
+                {t(category)}
               </button>
             );
           })}
         </div>
 
         {/* 이벤트 카드 목록 */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 pb-4">
+        <div className="grid grid-cols-1 gap-6 pb-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {loading ? (
-            <div className="col-span-full flex items-center justify-center w-full py-20">
+            <div className="flex items-center justify-center w-full py-20 col-span-full">
               <p className="text-xl text-[#38b000]">로딩 중...</p>
             </div>
           ) : displayedEvents.length === 0 ? (
-            <div className="col-span-full flex items-center justify-center w-full py-20">
+            <div className="flex items-center justify-center w-full py-20 col-span-full">
               <p className="text-xl text-[#888888]">공연 정보가 없습니다.</p>
             </div>
           ) : (
@@ -418,15 +429,15 @@ export default function Home() {
                     <img
                       src={event.thumbnail}
                       alt={event.category}
-                      className="max-w-full max-h-full object-contain"
+                      className="object-contain max-w-full max-h-full"
                       onError={(e) => {
                         e.currentTarget.style.display = "none";
                       }}
                     />
                   ) : (
-                    <div className="h-full w-full flex items-center justify-center text-gray-400">
+                    <div className="flex items-center justify-center w-full h-full text-gray-400">
                       <div className="text-center">
-                        <div className="text-6xl mb-2">🎭</div>
+                        <div className="mb-2 text-6xl">🎭</div>
                         <div className="text-sm">No Image</div>
                       </div>
                     </div>
@@ -434,7 +445,7 @@ export default function Home() {
                 </div>
                 <div className="w-full">
                   <div className="inline-block px-2 py-1 bg-[#38b000]/10 text-[#38b000] text-xs rounded-full mb-2">
-                    {event.category}
+                    {t(event.category)}
                   </div>
                   <p className="text-[18px] text-[#222222] line-clamp-2 mb-2 font-medium">
                     {event.title}

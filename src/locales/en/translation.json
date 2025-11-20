@@ -1,0 +1,14 @@
+{
+  "searching": "Please enter your search term",
+
+  "전체": "Entire",
+  "대중음악": "Popular music",
+  "클래식": "Classic",
+  "무용": "Dancing",
+  "뮤지컬": "Musical",
+  "영화": "Movie",
+  "개그쇼": "Comedy show",
+  "기타": "Etc",
+
+  "greeting":"welcome, {{email}} 님!"
+}
