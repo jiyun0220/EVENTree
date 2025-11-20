@@ -201,6 +201,7 @@ export default function MyCalendar() {
           src="/logo.png"
           alt="EvenTree Logo"
           className="h-[40px] object-contain"
+          onClick={() => navigate("/")}
         />
         <div className="flex items-center gap-4 ml-auto">
           {/* 언어 전환 버튼 */}
