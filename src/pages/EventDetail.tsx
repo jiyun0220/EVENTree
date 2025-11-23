@@ -57,32 +57,32 @@ export default function EventDetail() {
 
     const lat = parseFloat(event.gpsY);
     const lng = parseFloat(event.gpsX);
-    
+
     if (lat === 0 || lng === 0 || isNaN(lat) || isNaN(lng)) {
-      console.log('유효하지 않은 좌표:', { lat, lng });
+      console.log("유효하지 않은 좌표:", { lat, lng });
       return;
     }
 
-    console.log('🔍 카카오맵 초기화 시작');
-    
+    console.log("🔍 카카오맵 초기화 시작");
+
     const initMap = () => {
-      const container = document.getElementById('kakao-map');
+      const container = document.getElementById("kakao-map");
       if (!container) {
-        console.log('❌ 지도 컨테이너를 찾을 수 없습니다');
+        console.log("❌ 지도 컨테이너를 찾을 수 없습니다");
         return;
       }
 
       if (!window.kakao || !window.kakao.maps) {
-        console.log('⏳ 카카오맵 SDK 로딩 대기 중...');
+        console.log("⏳ 카카오맵 SDK 로딩 대기 중...");
         return;
       }
 
-      console.log('✅ 지도 생성 시작:', { lat, lng });
+      console.log("✅ 지도 생성 시작:", { lat, lng });
 
       try {
         const mapOption = {
           center: new window.kakao.maps.LatLng(lat, lng),
-          level: 3
+          level: 3,
         };
 
         const map = new window.kakao.maps.Map(container, mapOption);
@@ -90,20 +90,13 @@ export default function EventDetail() {
         // 마커 생성
         const markerPosition = new window.kakao.maps.LatLng(lat, lng);
         const marker = new window.kakao.maps.Marker({
-          position: markerPosition
+          position: markerPosition,
         });
         marker.setMap(map);
 
-        // 인포윈도우
-        const iwContent = `<div style="padding:5px;">${event.place}</div>`;
-        const infowindow = new window.kakao.maps.InfoWindow({
-          content: iwContent
-        });
-        infowindow.open(map, marker);
-
-        console.log('✅ 지도 생성 완료');
+        console.log("✅ 지도 생성 완료");
       } catch (error) {
-        console.error('❌ 지도 생성 오류:', error);
+        console.error("❌ 지도 생성 오류:", error);
       }
     };
 
@@ -112,19 +105,21 @@ export default function EventDetail() {
       return new Promise<void>((resolve, reject) => {
         // 이미 로드되어 있으면 바로 리턴
         if (window.kakao && window.kakao.maps) {
-          console.log('✅ SDK 이미 로드됨');
+          console.log("✅ SDK 이미 로드됨");
           resolve();
           return;
         }
 
         // 이미 스크립트 태그가 있는지 확인
-        const existingScript = document.querySelector('script[src*="dapi.kakao.com"]');
+        const existingScript = document.querySelector(
+          'script[src*="dapi.kakao.com"]'
+        );
         if (existingScript) {
-          console.log('📜 SDK 스크립트 태그 존재 - 로딩 대기 중');
+          console.log("📜 SDK 스크립트 태그 존재 - 로딩 대기 중");
           // 스크립트가 로드될 때까지 대기
           const checkInterval = setInterval(() => {
             if (window.kakao && window.kakao.maps) {
-              console.log('✅ 기존 스크립트 로드 완료');
+              console.log("✅ 기존 스크립트 로드 완료");
               clearInterval(checkInterval);
               resolve();
             }
@@ -133,31 +128,36 @@ export default function EventDetail() {
           setTimeout(() => {
             clearInterval(checkInterval);
             if (!window.kakao || !window.kakao.maps) {
-              console.error('❌ 기존 스크립트 로드 타임아웃');
-              reject(new Error('SDK load timeout'));
+              console.error("❌ 기존 스크립트 로드 타임아웃");
+              reject(new Error("SDK load timeout"));
             }
           }, 10000);
           return;
         }
 
-        console.log('📥 SDK 스크립트 동적 로드 시작');
-        const script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${import.meta.env.VITE_KAKAO_API_KEY}&libraries=services&autoload=false`;
-        
+        console.log("📥 SDK 스크립트 동적 로드 시작");
+        const script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${
+          import.meta.env.VITE_KAKAO_API_KEY
+        }&libraries=services&autoload=false`;
+
         script.onload = () => {
-          console.log('📜 스크립트 로드 완료 - kakao.maps.load() 호출');
+          console.log("📜 스크립트 로드 완료 - kakao.maps.load() 호출");
           // autoload=false이므로 수동으로 load 호출
           window.kakao.maps.load(() => {
-            console.log('✅ kakao.maps.load() 완료');
+            console.log("✅ kakao.maps.load() 완료");
             resolve();
           });
         };
 
         script.onerror = (error) => {
-          console.error('❌ 스크립트 로드 실패:', error);
-          console.error('API 키를 확인하세요:', import.meta.env.VITE_KAKAO_API_KEY);
-          console.error('카카오 개발자 콘솔에서 플랫폼 설정을 확인하세요');
+          console.error("❌ 스크립트 로드 실패:", error);
+          console.error(
+            "API 키를 확인하세요:",
+            import.meta.env.VITE_KAKAO_API_KEY
+          );
+          console.error("카카오 개발자 콘솔에서 플랫폼 설정을 확인하세요");
           reject(error);
         };
 
@@ -171,7 +171,7 @@ export default function EventDetail() {
         initMap();
       })
       .catch((error) => {
-        console.error('❌ 카카오맵 SDK 로드 실패:', error);
+        console.error("❌ 카카오맵 SDK 로드 실패:", error);
       });
   }, [event]);
 
@@ -379,7 +379,7 @@ export default function EventDetail() {
           src="/logo.png"
           alt="EvenTree Logo"
           className="h-[40px] object-contain"
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/home")}
         />
         <div className="flex items-center gap-4 ml-auto">
           {/* 언어 전환 버튼 */}
@@ -403,7 +403,7 @@ export default function EventDetail() {
       </header>
       <div className="fixed left-0 flex items-center justify-between px-10 py-8 top-18 z-90 ">
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/home")}
           className="flex items-center gap-2 text-[#38b000] hover:text-[#2d8c00] transition-colors"
         >
           <span className="text-2xl">←</span>
@@ -558,20 +558,21 @@ export default function EventDetail() {
           )}
 
           {/* 위치 정보 */}
-          {event.gpsX && event.gpsY && parseFloat(event.gpsX) !== 0 && parseFloat(event.gpsY) !== 0 && (
-            <div className="p-8 border-t border-gray-200">
-              <h2 className="text-2xl font-bold text-[#222222] mb-4">
-                {t("location")}
-              </h2>
-              <div 
-                id="kakao-map" 
-                className="w-full h-[400px] rounded-lg overflow-hidden border border-[#888888]/30"
-              />
-              <p className="text-sm text-[#888888] mt-3">
-                📍 {event.area}
-              </p>
-            </div>
-          )}
+          {event.gpsX &&
+            event.gpsY &&
+            parseFloat(event.gpsX) !== 0 &&
+            parseFloat(event.gpsY) !== 0 && (
+              <div className="p-8 border-t border-gray-200">
+                <h2 className="text-2xl font-bold text-[#222222] mb-4">
+                  {t("location")}
+                </h2>
+                <div
+                  id="kakao-map"
+                  className="w-full h-[400px] rounded-lg overflow-hidden border border-[#888888]/30"
+                />
+                <p className="text-sm text-[#888888] mt-3">📍 {event.area}</p>
+              </div>
+            )}
         </div>
       </main>
 
