@@ -10,7 +10,6 @@ import "../calendar.css";
 import { useTranslation } from "react-i18next";
 import type { Formats } from "react-big-calendar";
 import { useEvents } from "../hooks/useEvents";
-import type { EventData } from "../services/eventService";
 import { useUpdateEvent } from "../hooks/useUpdateEvent";
 import { useDeleteEvent } from "../hooks/useDeleteEvent";
 
@@ -273,14 +272,15 @@ export default function MyCalendar() {
                 onSelectEvent={handleSelectEvent}
                 eventPropGetter={eventStyleGetter}
                 view={view}
+                views={["month", "agenda"]} // 월별 일정, 전체 일정만 보이도록
                 onView={setView}
                 messages={{
                   next: t("next"),
                   previous: t("before"),
                   today: t("today"),
                   month: t("month"),
-                  week: t("week"),
-                  day: t("day"),
+                  // week: t("week"),
+                  // day: t("day"),
                   agenda: t("schedule"),
                   date: t("date"),
                   time: t("time"),
