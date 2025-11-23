@@ -374,30 +374,30 @@ export default function EventDetail() {
       </div>
 
       {/* 헤더 */}
-      <header className="fixed top-0 left-0 w-full z-100 flex items-center border-b border-[#888888]/30 bg-white px-10 py-4">
+      <header className="fixed top-0 left-0 w-full z-100 flex items-center border-b border-[#888888]/30 bg-white px-4 sm:px-6 md:px-10 py-4">
         <img
           src="/logo.png"
           alt="EvenTree Logo"
-          className="h-[40px] object-contain"
+          className="h-8 sm:h-10 object-contain cursor-pointer"
           onClick={() => navigate("/home")}
         />
-        <div className="flex items-center gap-4 ml-auto">
+        <div className="flex items-center gap-2 sm:gap-4 ml-auto">
           {/* 언어 전환 버튼 */}
           <button
             onClick={() => changeLanguage(i18n.language === "ko" ? "en" : "ko")}
-            className="flex items-center gap-2 px-4 py-2 border border-[#888888] rounded-lg hover:border-[#38b000] hover:bg-[#f0fdf4] transition-colors"
+            className="hidden sm:flex items-center gap-2 px-3 sm:px-4 py-2 border border-[#888888] rounded-lg hover:border-[#38b000] hover:bg-[#f0fdf4] transition-colors"
             aria-label="언어 전환"
           >
-            <span className="text-sm font-medium text-[#444444]">
+            <span className="text-xs sm:text-sm font-medium text-[#444444]">
               {i18n.language === "ko" ? "KO" : "EN"}{" "}
             </span>
           </button>
           <button
             onClick={() => navigate("/calendar")}
-            className="flex items-center justify-center w-10 h-10 rounded-full bg-[#38b000] hover:bg-[#2d8c00] transition-colors"
+            className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#38b000] hover:bg-[#2d8c00] transition-colors"
             aria-label="내 캘린더"
           >
-            <img src="/profile-icon.svg" alt="프로필" className="w-6 h-6" />
+            <img src="/profile-icon.svg" alt="프로필" className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
         </div>
       </header>
